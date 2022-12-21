@@ -4,14 +4,21 @@ from rest_framework.viewsets import GenericViewSet
 from user.models import User, Post, PostLike
 from user.serializers import (
     UserListSerializer,
+    UserListPutSerializer,
     UserDetailSerializer,
     PostSerializer,
+    PostListSerializer,
+    PostDetailSerializer,
     PostLikeSerializer,
 )
 
 
 class UserViewSet(
-    viewsets.ModelViewSet,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
 ):
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
@@ -20,19 +27,24 @@ class UserViewSet(
         queryset = self.queryset.filter(username=self.request.user)
         if self.action == "list":
             return self.queryset.all()
+
         return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
+        if self.action in ["update", "partial_update"]:
+            return UserListPutSerializer
+        if self.action == "create":
+            return UserDetailSerializer
 
         return UserDetailSerializer
 
 
 class PostViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
     mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
@@ -40,10 +52,22 @@ class PostViewSet(
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        queryset = self.queryset.filter(user=self.request.user)
+        if self.action == "list":
+            return self.queryset.all()  # shows all users posts
 
-    def perform_create(self, serializer):
+        return queryset
+
+    def perform_create(self, serializer):  # Set current user as post author
         serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PostListSerializer
+        if self.action == "retrieve":
+            return PostDetailSerializer
+
+        return PostSerializer
 
 
 class PostLikeViewSet(

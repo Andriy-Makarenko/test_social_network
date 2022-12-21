@@ -14,14 +14,15 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ("post", "like_count")
+        fields = ("id", "post", "user", "like_count")
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ("id", "post", "like_count", "unlike_count", "creation_date")
+        fields = ("id", "post", "like_count", "unlike_count", "creation_date", "likes")
+        extra_kwargs = {"likes": {"write_only": True}}
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -33,21 +34,37 @@ class UserListSerializer(serializers.ModelSerializer):
         read_only_fields = ("last_login", "date_joined")
 
 
+class UserListPutSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "email")
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
     posts = PostDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ("password",
-                  "username",
-                  "first_name",
-                  "last_name",
-                  "is_staff",
-                  "email",
-                  "last_login",
-                  "date_joined",
-                  "posts")
-        read_only_fields = ("is_staff", "last_login", "date_joined")
+        fields = (
+            "password",
+            "username",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "email",
+            "last_login",
+            "date_joined",
+            "posts"
+        )
+        read_only_fields = (
+            "first_name",
+            "last_name",
+            "is_staff",
+            "email",
+            "last_login",
+            "date_joined"
+        )
         extra_kwargs = {"password": {"write_only": True}}
 
 
