@@ -1,7 +1,5 @@
 from django.urls import path, include
 from rest_framework import routers
-
-from rest_framework.authtoken import views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -12,10 +10,8 @@ from user.views import (
     UserViewSet,
     PostViewSet,
     PostLikeViewSet,
-    CreateTokenView,
     ManageUserView,
 )
-
 
 router = routers.DefaultRouter()
 router.register("users", UserViewSet)
