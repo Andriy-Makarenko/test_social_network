@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import User, Post, PostLike
 
@@ -14,7 +15,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ("id", "post", "user", "like_count")
+        fields = ("id", "post", "like_count")
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
@@ -22,7 +23,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ("id", "post", "like_count", "unlike_count", "creation_date", "likes")
-        extra_kwargs = {"likes": {"write_only": True}}
+        # extra_kwargs = {"likes": {"write_only": True}}
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -65,7 +66,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "last_login",
             "date_joined"
         )
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {"password": {"write_only": True}, "min_length": 8}
+
+    def create(self, validated_data):
+        """Save password in HASHed form"""
+        return get_user_model().objects.create_user(**validated_data)
 
 
 class PostLikeSerializer(serializers.ModelSerializer):

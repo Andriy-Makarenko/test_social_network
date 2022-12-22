@@ -1,10 +1,17 @@
 from django.urls import path, include
 from rest_framework import routers
+# from rest_framework.authtoken import views
+# from rest_framework_simplejwt.views import (
+#     TokenObtainPairView,
+#     TokenRefreshView,
+#     TokenVerifyView,
+# )
 
 from user.views import (
     UserViewSet,
     PostViewSet,
     PostLikeViewSet,
+    CreateTokenView,
 )
 
 
@@ -13,6 +20,12 @@ router.register("users", UserViewSet)
 router.register("posts", PostViewSet)
 router.register("likes", PostLikeViewSet)
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("token/", CreateTokenView.as_view(), name="token_create"),
+    # path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    # path("me/", ManageUserView.as_view(), name="manage"),
+]
 
 app_name = "user"

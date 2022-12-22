@@ -1,4 +1,6 @@
 from rest_framework import mixins, viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
 from rest_framework.viewsets import GenericViewSet
 
 from user.models import User, Post, PostLike
@@ -49,7 +51,7 @@ class PostViewSet(
     GenericViewSet,
 ):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostDetailSerializer
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
@@ -76,3 +78,7 @@ class PostLikeViewSet(
 ):
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
+
+
+class CreateTokenView(ObtainAuthToken):
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
