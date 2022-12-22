@@ -26,7 +26,6 @@ class UserViewSet(
 ):
     queryset = User.objects.all()
     serializer_class = UserDetailSerializer
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -56,7 +55,6 @@ class PostViewSet(
 ):
     queryset = Post.objects.all()
     serializer_class = PostDetailSerializer
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -84,7 +82,6 @@ class PostLikeViewSet(
 ):
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
@@ -94,7 +91,6 @@ class CreateTokenView(ObtainAuthToken):
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserDetailSerializer
-    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
