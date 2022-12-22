@@ -3,6 +3,6 @@ from django.contrib.auth.admin import UserAdmin
 
 from user.models import User, Post, PostLike
 
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
 admin.site.register(Post)
 admin.site.register(PostLike)
